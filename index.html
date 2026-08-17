@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>君穗 FDE 交互原型</title>
+<style>
+:root{font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif;color:#172033;background:#f5f7fb}
+*{box-sizing:border-box}body{margin:0}.wrap{max-width:1080px;margin:0 auto;padding:72px 24px}
+.hero{margin-bottom:36px}.eyebrow{color:#2468f2;font-weight:700;letter-spacing:.08em}.hero h1{font-size:42px;margin:12px 0}.hero p{color:#667085;font-size:17px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.card{background:#fff;border:1px solid #e6eaf0;border-radius:16px;padding:28px;box-shadow:0 10px 30px rgba(21,39,80,.06)}
+.card h2{margin:0 0 8px}.card p{color:#778196;margin:0 0 22px}.links{display:grid;gap:12px}
+a{display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:#245bd6;background:#f3f7ff;border:1px solid #dce8ff;padding:14px 16px;border-radius:10px;font-weight:600}
+a:hover{background:#eaf2ff}.footer{margin-top:30px;color:#8a94a6;font-size:14px}
+@media(max-width:720px){.wrap{padding:40px 18px}.hero h1{font-size:32px}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main class="wrap">
+<section class="hero"><div class="eyebrow">JUNSUI · PROTOTYPE</div><h1>君穗 FDE 交互原型</h1><p>文书补充材料、律师审核、定稿审批与最终交付业务闭环。</p></section>
+<section class="grid">
+<article class="card"><h2>USER 用户侧</h2><p>查看待补充事项、提交材料及接收最终文书。</p><div class="links">
+<a href="./USER/document-tasks.html"><span>文书任务与补充材料</span><span>→</span></a>
+<a href="./USER/document-delivery.html"><span>最终文书交付</span><span>→</span></a>
+</div></article>
+<article class="card"><h2>ADMIN 律师侧</h2><p>审核材料、处理无法提供申请并审批定稿。</p><div class="links">
+<a href="./ADMIN/my-todos.html"><span>我的待办与材料审核</span><span>→</span></a>
+<a href="./ADMIN/document-approval.html"><span>文书定稿审批</span><span>→</span></a>
+</div></article>
+</section>
+<div class="footer">本页面为产品交互演示，不连接正式业务数据。</div>
+</main></body></html>

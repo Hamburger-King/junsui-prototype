@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="./junsui-logo.png" />
+  <title>君穗AI</title>
+  <style>
+    :root{--primary:#165dff;--text-1:#1d2129;--text-2:#4e5969;--text-3:#86909c;--text-4:#c9cdd4;--line:#e5e6eb;--bg:#fff;--shadow:0 8px 22px rgba(29,33,41,.09)}
+    *{box-sizing:border-box}body{min-height:100vh;margin:0;font:14px "PingFangSC","PingFang SC","Microsoft YaHei",Arial,sans-serif;color:var(--text-1);background:var(--bg);-webkit-font-smoothing:antialiased}button,textarea{font:inherit}html,body,.page,.law-panel{scrollbar-width:none;-ms-overflow-style:none}html::-webkit-scrollbar,body::-webkit-scrollbar,.page::-webkit-scrollbar,.law-panel::-webkit-scrollbar{display:none}
+    .page{position:relative;min-height:100vh;overflow:hidden;border:1px solid #eaedf2;border-radius:8px}.stage{width:min(990px,calc(100vw - 36px));margin:0 auto;padding-top:clamp(126px,15.5vh,194px)}
+    .greeting{margin:0 0 37px;text-align:center;font-size:24px;line-height:34px;font-weight:700;letter-spacing:0}.composer{position:relative;width:min(884px,100%);min-height:130px;margin:0 auto;padding:21px 18px 17px;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);transition:border-color .18s ease,box-shadow .18s ease}.composer:focus-within{border-color:#dbe6ff;box-shadow:0 10px 26px rgba(22,93,255,.1)}.prompt{display:block;width:100%;min-height:50px;max-height:132px;padding:0;resize:none;border:0;outline:0;color:var(--text-1);line-height:22px;background:transparent}.prompt::placeholder{color:#b6bdc9}.composer-foot{display:flex;align-items:center;gap:10px;min-height:42px}.spacer{flex:1}
+    .pill,.send,.assist{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);background:#fff;color:var(--text-2);cursor:pointer;transition:border-color .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease}.pill{height:34px;padding:0 14px;gap:6px;border-radius:13px;font-weight:500;white-space:nowrap}.pill:hover,.assist:hover{color:var(--primary);border-color:#bedaff;box-shadow:0 4px 12px rgba(22,93,255,.08)}.pill:active,.card:active{transform:scale(.98)}.pill:focus-visible,.send:focus-visible,.assist:focus-visible,.card:focus-visible,.help:focus-visible,.side-back:focus-visible{outline:3px solid #dbeafe;outline-offset:2px}.pill svg{width:16px;height:16px}.mode-chip{display:none;color:#165dff;border-color:#d8e6ff;background:#f5f9ff}.mode-chip .close{font-size:18px;line-height:1}.assist{height:30px;padding:0 6px 0 8px;gap:4px;border:0;color:#c3cad5;font-size:13px;background:transparent}.divider{width:1px;height:18px;background:#eef0f5}.send{width:36px;height:36px;border:0;border-radius:50%;color:#fff;background:#d5dae4;cursor:not-allowed}.send.ready{background:var(--primary);cursor:pointer;box-shadow:0 8px 18px rgba(22,93,255,.22)}.send.ready:hover{transform:translateY(-1px)}.send svg{width:18px;height:18px}
+    .quick{display:flex;justify-content:center;flex-wrap:wrap;gap:14px 16px;width:min(795px,100%);margin:32px auto 0}.quick .pill{height:39px;padding:0 17px;border-radius:20px;color:#303846;box-shadow:0 2px 6px rgba(29,33,41,.03)}.quick svg{width:18px;height:18px}
+    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin:46px auto 0}.card{min-height:260px;padding:22px 18px 16px;overflow:hidden;border:1px solid #edf0f5;border-radius:12px;background:#fff;box-shadow:0 10px 24px rgba(29,33,41,.04);cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}.card:hover{transform:translateY(-3px);border-color:#dbe6ff;box-shadow:0 14px 30px rgba(22,93,255,.08)}.card h2{margin:0;font-size:16px;line-height:24px;font-weight:700;letter-spacing:0}.card p{margin:7px 0 0;color:#9aa4b2;font-size:14px;line-height:22px;font-weight:600}
+    .visual{position:relative;height:150px;margin-top:23px;border-radius:8px;background:linear-gradient(180deg,#fbfdff 0%,#f4f8ff 100%)}.doc{position:absolute;width:112px;height:126px;padding:11px 10px;border-radius:4px;background:#fff;box-shadow:0 10px 18px rgba(64,82,112,.12)}.doc::before,.doc::after,.line{content:"";display:block;height:4px;border-radius:99px;background:#d9e2ef}.doc::before{width:46px;margin-bottom:12px;background:#1d4ed8}.doc::after{width:82px;margin-top:8px}.line{width:92px;margin-top:7px}.line.short{width:58px}.badge{position:absolute;z-index:3;height:25px;padding:0 10px;border-radius:13px;color:#2d6f9f;background:#dff4ff;box-shadow:0 6px 14px rgba(45,111,159,.13);font-size:12px;line-height:25px;font-weight:700;white-space:nowrap}
+    .research .doc{left:22px;top:21px;width:148px;height:106px;transform:rotate(-5deg);background:linear-gradient(150deg,#f2f8ff 0%,#fff 48%,#edf4ff 100%)}.research .doc::before{width:98px;height:6px}.research .sheet{position:absolute;right:19px;bottom:0;width:74px;height:128px;transform:skewY(-15deg);background:repeating-linear-gradient(180deg,#dce7f5 0 3px,transparent 3px 9px);opacity:.65}.research .badge{right:14px;top:62px}
+    .draft .doc.one{left:30px;top:18px;transform:rotate(-2deg)}.draft .doc.two{right:22px;top:18px;transform:rotate(3deg)}.draft .badge{right:14px;top:22px}.draft .badge.bottom{left:10px;top:100px}.review .window,.case .window{position:absolute;inset:12px 10px 10px;border-radius:5px;background:#fff;box-shadow:0 9px 17px rgba(64,82,112,.12)}.review .window::before,.case .window::before{content:"";display:block;height:14px;border-radius:5px 5px 0 0;background:radial-gradient(circle at 10px 7px,#ff7f75 0 2px,transparent 3px),radial-gradient(circle at 20px 7px,#ffd166 0 2px,transparent 3px),radial-gradient(circle at 30px 7px,#59d18c 0 2px,transparent 3px),#f6f8fb}.review .text,.case .text{position:absolute;left:18px;right:18px;height:5px;border-radius:99px;background:#dce3ef}
+    .review .risk{position:absolute;left:19px;right:47px;top:66px;height:3px;border-radius:99px;background:#ff8b7c;transform:rotate(-3deg);box-shadow:0 19px 0 #ff8b7c,58px 38px 0 #ff8b7c}.review .side{position:absolute;right:10px;top:0;width:70px;height:140px;border-left:1px solid #eef1f6;background:repeating-linear-gradient(180deg,#edf4ff 0 5px,transparent 5px 14px)}.case .window{inset:12px 6px 10px 9px}.case .badge{right:4px;top:18px;background:#dce9ff;color:#2e5aab}.case .badge.bottom{right:9px;top:54px;color:#2d8c98;background:#dcfbff}.case .cube{position:absolute;left:-4px;bottom:46px;width:28px;height:28px;border-radius:8px;color:#fff;background:linear-gradient(135deg,#a364ff,#7849f6);box-shadow:0 10px 18px rgba(120,73,246,.24);transform:rotate(-14deg)}.case .cube::before{content:"";position:absolute;inset:7px;border:2px solid currentColor;border-radius:3px}.t1{top:37px}.t2{top:51px}.t3{top:76px}.t4{top:91px}
+    .files{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}.files:empty{display:none}.file-chip{display:inline-flex;align-items:center;gap:7px;max-width:260px;height:28px;padding:0 9px;border:1px solid #e7ebf1;border-radius:14px;color:#526071;background:#f8fafc}.file-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.file-chip button{width:18px;height:18px;border:0;border-radius:50%;background:#edf1f7;color:#7b8493;cursor:pointer}.skill-menu{display:none;position:absolute;left:150px;bottom:58px;z-index:5;width:178px;padding:6px;border:1px solid #e7ebf1;border-radius:12px;background:#fff;box-shadow:0 14px 36px rgba(29,33,41,.12)}.skill-menu.show{display:grid}.skill-menu button{height:34px;border:0;border-radius:8px;background:#fff;color:#303846;text-align:left;padding:0 10px;cursor:pointer}.skill-menu button:hover{background:#f4f8ff;color:var(--primary)}.dialog{display:none;width:min(920px,100%);margin:0 auto 14px}.page.chatting{overflow:auto;background:#fff}.page.chatting .stage{width:min(980px,calc(100vw - 36px));padding-top:28px;padding-bottom:46px}.page.chatting .greeting,.page.chatting .quick,.page.chatting .cards{display:none}.page.chatting .dialog{display:block}.page.chatting .composer{width:min(760px,100%);min-height:108px;margin:18px auto 0;padding:18px 18px 14px;border-radius:16px;box-shadow:0 14px 34px rgba(29,33,41,.08)}.page.chatting .prompt{min-height:44px}.chat-turn{display:grid;grid-template-columns:34px minmax(0,1fr);gap:14px;margin-bottom:18px;animation:rise .18s ease both}.chat-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;box-shadow:0 3px 8px rgba(29,33,41,.12)}.chat-avatar.user{background:linear-gradient(135deg,#d9dde5,#aeb7c7);color:#263142}.chat-avatar.ai{background:linear-gradient(135deg,#1d8bd8,#0b5f9d)}.user-question{margin:3px 0 0;font-size:17px;line-height:28px;font-weight:700;color:#121821}.answer-doc{max-width:760px;color:#141923;font-size:16px;line-height:27px;font-weight:600}.answer-doc p{margin:0 0 9px}.answer-doc hr{height:1px;margin:12px 0;border:0;background:#b9bec8}.answer-doc h2{margin:10px 0 9px;font-size:18px;line-height:27px;font-weight:800}.answer-doc h3{margin:9px 0 5px;font-size:16px;line-height:24px;font-weight:800}.answer-doc ol,.answer-doc ul{margin:0 0 9px;padding-left:0;list-style-position:inside}.answer-doc li{margin:6px 0}.law-chip{display:inline-flex;align-items:center;height:20px;margin-left:8px;padding:0 7px;border-radius:4px;background:#dceaff;color:#1f6bff;font-size:12px;font-weight:700;vertical-align:1px}.answer-table{width:100%;margin:15px 0 13px;border-collapse:collapse;font-size:15px;line-height:23px;background:#fff}.answer-table th,.answer-table td{padding:8px 12px;border:1px solid #d6dbe3;text-align:left;vertical-align:top}.answer-table th{background:#f4f6f9;font-weight:800}.assistant-note{display:grid;grid-template-columns:34px 1fr;gap:14px;margin:14px 0 0;color:#222936;font-size:15px;font-weight:600}.assistant-note p{margin:2px 0 0;line-height:28px}.msg-files{display:flex;grid-column:2;flex-wrap:wrap;gap:6px;margin-top:8px}.msg-files span{height:24px;padding:0 8px;border-radius:12px;background:#edf4ff;color:#2558c7;line-height:24px}.chat-footnote{display:none;margin:12px auto 0;text-align:center;color:#b0b6c1;font-size:12px}.page.chatting .chat-footnote{display:block}.toast{position:fixed;left:50%;bottom:30px;z-index:20;max-width:min(520px,calc(100vw - 36px));padding:10px 14px;border-radius:10px;background:#1d2129;color:#fff;box-shadow:0 12px 30px rgba(29,33,41,.16);opacity:0;pointer-events:none;transform:translate(-50%,8px);transition:opacity .18s ease,transform .18s ease}.toast.show{opacity:1;transform:translate(-50%,0)}@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%,100%{content:"..."}}
+    .side-back,.help{position:fixed;display:inline-flex;align-items:center;justify-content:center;color:#9aa4b2}.side-back{left:10px;top:51%;width:26px;height:48px;border:0;background:transparent;transform:translateY(-50%);cursor:pointer}.side-back svg{width:22px;height:38px}.help{right:36px;bottom:28px;width:40px;height:40px;border:1px solid #e7ebf1;border-radius:50%;background:#fff;box-shadow:0 5px 14px rgba(29,33,41,.08);cursor:pointer}.help svg{width:20px;height:20px}.blue{color:#3b82f6}.purple{color:#9857ff}.green{color:#5ccf63}.cyan{color:#21c7cf}
+    .page.chatting{background:#fff}.page.chatting,.page.chatting *{font-family:"PingFangSC","PingFang SC","Microsoft YaHei",Arial,sans-serif}.page.chatting .user-question,.page.chatting .answer-doc,.page.chatting .answer-doc h2,.page.chatting .answer-doc h3,.page.chatting .answer-doc strong,.page.chatting .answer-table th,.page.chatting .assistant-note{font-weight:400}.page.chatting .answer-table th{background:#fff}.law-chip{border:1px solid transparent;font-weight:400;cursor:pointer}.law-chip:hover,.law-chip:focus-visible{border-color:#7db2ff;border-style:dashed;background:#fff;outline:0}.answer-doc.typing::after{content:"";display:inline-block;width:1px;height:18px;margin-left:2px;background:#165dff;vertical-align:-3px;animation:blink .8s steps(1,end) infinite}.assistant-note.pending{display:none}.law-panel{position:fixed;z-index:30;top:0;right:0;width:min(640px,42vw);height:100vh;padding:22px 30px 40px;overflow:auto;background:#fff;border-left:1px solid #e7ebf1;box-shadow:-18px 0 36px rgba(29,33,41,.12);transform:translateX(102%);transition:transform .22s ease}.law-panel.open{transform:none}.law-close{position:absolute;top:14px;right:18px;width:34px;height:34px;border:0;background:#fff;color:#1d2129;font-size:28px;line-height:34px;cursor:pointer}.law-panel h2{margin:0 0 22px;color:#165dff;font-size:16px;font-weight:400}.law-panel h3{margin:0 0 14px;font-size:18px;font-weight:400}.law-panel .law-meta{display:flex;gap:10px;margin:0 0 18px;color:#86909c}.law-panel .law-meta span:first-child{width:8px;height:8px;margin-top:6px;border-radius:50%;background:#165dff}.law-panel .reply-box{margin:0 0 22px;padding:16px;border:1px dashed #9fc5ff;border-radius:12px;color:#4e5969}.law-panel p{margin:0 0 16px;font-size:15px;line-height:28px}.law-panel mark{padding:1px 6px;border-radius:4px;background:#eaf3ff;color:#165dff}.law-panel[aria-hidden="true"]{visibility:hidden}.law-panel.open[aria-hidden="false"]{visibility:visible}@keyframes blink{50%{opacity:0}}
+    .service-pack{display:grid;grid-template-columns:34px minmax(0,1fr);gap:14px;margin:6px 0 20px}.service-pack.pending{display:none}.service-carousel{grid-column:2;position:relative;width:min(500px,100%)}.service-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;cursor:grab;touch-action:pan-y}.service-track::-webkit-scrollbar{display:none}.service-track.dragging{cursor:grabbing;scroll-behavior:auto}.service-card{position:relative;flex:0 0 100%;min-height:172px;scroll-snap-align:start;user-select:none;padding:18px 24px;border:1px solid #cfe0ff;border-radius:12px;background:linear-gradient(135deg,#eef5ff 0%,#fbfdff 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.6)}.service-head{display:block}.service-icon{display:none}.service-copy h3{display:inline;margin:0;font-size:26px;line-height:1.15;font-weight:400;color:#202735;background:linear-gradient(180deg,transparent 62%,#c8ddff 0)}.service-copy p{max-width:380px;margin:12px 0 6px;color:#1765ff;font-size:16px;line-height:23px;font-weight:400}.service-dots{position:absolute;right:30px;top:30px;display:flex;gap:7px}.service-dot{width:8px;height:8px;padding:0;border:0;border-radius:99px;background:#b9d7ff;cursor:pointer}.service-dot.active{width:26px;background:#1765ff}.service-cta{position:absolute;right:18px;bottom:12px;width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:#4e5969;font-size:0;cursor:pointer}.service-cta::before{content:"→";font-size:26px;line-height:36px}.service-cta:hover{color:#1765ff;background:transparent}
+    .service-form .intro{margin:0 0 18px;color:#86909c;line-height:24px}.form-card{padding:18px;margin-bottom:14px;border:1px solid #d8e5ff;border-radius:10px}.form-card h3{margin:0 0 14px;font-size:17px;font-weight:600}.form-card label{display:block;margin:10px 0;color:#4e5969}.form-card input[type=text],.form-card textarea{width:100%;border:1px solid #e5e6eb;border-radius:8px;padding:10px 12px;outline:0}.form-card textarea{height:88px;resize:none}.form-actions{display:flex;gap:12px}.form-actions button{height:40px;border:0;border-radius:8px;padding:0 18px;cursor:pointer}.form-actions button:first-child{color:#fff;background:var(--primary)}.form-actions button:last-child{color:#4e5969;background:#f2f3f5}
+    .case-actions{display:grid;grid-template-columns:34px minmax(0,1fr);gap:14px;margin:10px 0 16px}.case-actions.pending{display:none}.action-list{grid-column:2;display:flex;flex-wrap:wrap;gap:10px}.action-btn{height:38px;padding:0 14px;border:1px solid #d8e6ff;border-radius:19px;color:#165dff;background:#f7fbff;cursor:pointer}.action-btn:hover{background:#eef6ff}.pay-card{padding:16px;margin-bottom:12px;border:1px solid #e8edf6;border-radius:10px}.pay-card strong{display:block;margin-bottom:6px;font-size:18px}.price{color:#165dff;font-size:24px}.service-card>.price{margin:4px 0;font-size:14px}.service-card>p{max-width:360px;margin:5px 48px 0 0;overflow:hidden;color:#5f6876;font-size:13px;line-height:20px;text-overflow:ellipsis;white-space:nowrap}.doc-list{display:flex;flex-wrap:nowrap;gap:5px;margin:5px 48px 0 0;overflow:hidden}.doc-list span{flex:0 0 auto;padding:2px 7px;border-radius:99px;background:rgba(255,255,255,.76);color:#4e5969;font-size:12px}.qr-mask{position:absolute;inset:0;z-index:5;display:grid;place-items:center;padding:24px;background:rgba(255,255,255,.76);backdrop-filter:blur(2px)}.qr-modal{position:relative;width:min(310px,100%);padding:28px 22px 22px;border:1px solid #e8edf6;border-radius:12px;background:#fff;box-shadow:0 18px 46px rgba(29,33,41,.18);text-align:center}.qr-close{position:absolute;right:10px;top:10px;width:36px;height:36px;border:0;border-radius:50%;background:#fff;color:#4e5969;font-size:24px;line-height:36px;cursor:pointer}.qr-close:hover,.qr-close:focus-visible{background:#f2f3f5;color:#1d2129;outline:0}.qr-confirm{height:36px;padding:0 18px;border:0;border-radius:18px;background:#165dff;color:#fff;cursor:pointer}.qr-confirm:hover{background:#0e42d2}.qr-code{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;width:176px;height:176px;margin:14px auto;padding:10px;background:#fff;border:1px solid #edf0f5}.qr-code i{border-radius:2px;background:#fff}.qr-code i.on{background:#111827}
+    .law-panel strong{font-weight:400}@media (max-width:900px){.law-panel{width:100%;padding:22px 20px 40px}}
+    .chat-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover}.page.chatting .stage{padding-bottom:190px}.page.chatting .composer{position:fixed;left:50%;bottom:30px;z-index:18;transform:translateX(-50%);margin:0}.page.chatting .chat-footnote{position:fixed;left:50%;bottom:6px;z-index:18;width:min(760px,calc(100vw - 36px));transform:translateX(-50%)}.law-ref{padding:0 0 2px;border:0;border-bottom:1px dashed transparent;background:transparent;color:inherit;font:inherit;cursor:pointer}.law-ref:hover,.law-ref:focus-visible{border-bottom-color:#165dff;outline:0;color:#165dff}.answer-doc .law-chip{cursor:default;pointer-events:none}.answer-doc .law-chip:hover{border-color:transparent;background:#dceaff}
+    .page.mode-selected .stage{padding-top:92px}.page.mode-selected .greeting{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:38px}.page.mode-selected .greeting svg{width:30px;height:30px}.page.mode-selected .composer{width:min(800px,100%)}.page.mode-selected #skillBtn{display:none}.page.mode-selected .mode-chip{display:inline-flex}.page.chatting .greeting,.page.chatting .mode-chip{display:none!important}
+    @media (max-width:900px){.page{overflow:auto;border-radius:0}.stage{padding:88px 16px 52px}.greeting{margin-bottom:26px;font-size:20px;line-height:30px}.composer{min-height:146px}.composer-foot{flex-wrap:wrap}.spacer,.divider,.assist{display:none}.quick{margin-top:24px;gap:10px}.quick .pill{height:36px;padding:0 13px}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:30px}.card{min-height:238px}.skill-menu{left:18px;bottom:86px}.page.chatting .stage{width:100%;padding:28px 16px 210px}.chat-turn,.assistant-note{grid-template-columns:30px minmax(0,1fr);gap:10px}.answer-doc{font-size:15px;line-height:28px}.answer-table{display:block;overflow-x:auto;white-space:nowrap}.page.chatting .composer{width:calc(100% - 32px);min-height:132px;bottom:24px}.page.chatting .chat-footnote{width:calc(100% - 32px);bottom:4px}}@media (max-width:560px){.cards{grid-template-columns:1fr}.side-back{display:none}.help{right:18px;bottom:18px}.answer-doc h2{font-size:17px}.law-chip{margin-left:4px}.assistant-note{font-size:14px}}@media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+      <symbol id="paperclip" viewBox="0 0 24 24"><path d="m21.4 11.4-8.7 8.7a6 6 0 0 1-8.5-8.5l9.3-9.3a4 4 0 0 1 5.7 5.7l-9.4 9.4a2 2 0 1 1-2.8-2.8l8.7-8.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="spark" viewBox="0 0 24 24"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Zm6 11 .9 2.7 2.6.8-2.6.9L18 21l-.9-2.6-2.6-.9 2.6-.8L18 14Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+      <symbol id="search" viewBox="0 0 24 24"><path d="m20 20-4.5-4.5M18 11a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+      <symbol id="doc" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7V3Zm7 0v5h5M9.5 13h5M9.5 17h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="edit" viewBox="0 0 24 24"><path d="M5 19h4l10-10a2.8 2.8 0 0 0-4-4L5 15v4Zm9-13 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="scale" viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M7 7l-4 7h8L7 7Zm10 0-4 7h8l-4-7Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="shield" viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 4.3-2.8 8.1-7 10-4.2-1.9-7-5.7-7-10V6l7-3Zm-3 9 2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="back" viewBox="0 0 24 24"><path d="m15 5-6 7 6 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="headset" viewBox="0 0 24 24"><path d="M4 13a8 8 0 0 1 16 0v4a3 3 0 0 1-3 3h-2M4 13v4h3v-5H5a1 1 0 0 0-1 1Zm16 0v4h-3v-5h2a1 1 0 0 1 1 1Zm-8 7h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    </svg>
+
+    <button class="side-back" aria-label="返回"><svg><use href="#back"/></svg></button>
+    <section class="stage" aria-label="君穗AI对话首页">
+      <h1 class="greeting">晚上好 满萃金奖深烘冰美式，需要我为你做什么</h1>
+      <section class="dialog" id="dialog" aria-live="polite" aria-label="对话内容"></section>
+      <form class="composer" id="composer">
+        <textarea class="prompt" id="prompt" rows="2" placeholder="请直接向我提问，或从上传文件开始（Ctrl/Shift + Enter 换行）" aria-label="请输入问题"></textarea>
+        <div class="files" id="files" aria-live="polite"></div>
+        <div class="composer-foot">
+          <button class="pill" id="fileBtn" type="button"><svg><use href="#paperclip"/></svg>选择文件</button>
+          <input id="fileInput" type="file" multiple hidden />
+          <button class="pill mode-chip" id="modeChip" type="button" aria-label="取消当前能力"><svg><use href="#edit"/></svg><span id="modeLabel">文书&amp;合同起草</span><span class="close" aria-hidden="true">×</span></button>
+          <button class="pill" id="skillBtn" type="button"><svg><use href="#spark"/></svg>技能：<span id="skillLabel">智能规划</span></button>
+          <span class="spacer"></span><button class="assist" id="polishBtn" type="button"><svg width="15" height="15"><use href="#spark"/></svg>问题润色</button><span class="divider" aria-hidden="true"></span>
+          <button class="send" id="sendBtn" type="submit" aria-label="发送" disabled><svg><use href="#up"/></svg></button>
+        </div>
+        <div class="skill-menu" id="skillMenu" role="menu">
+          <button type="button" data-mode="AI搜法">AI搜法</button><button type="button" data-mode="AI类案">AI类案</button><button type="button" data-mode="文书&合同起草">文书&amp;合同起草</button><button type="button" data-mode="法律研究">法律研究</button><button type="button" data-mode="合同审查">合同审查</button>
+        </div>
+      </form>
+      <p class="chat-footnote">内容由智能法律助手生成，仅供参考，请结合具体证据与专业意见判断</p>
+      <nav class="quick" aria-label="快捷功能">
+        <button class="pill" type="button" data-mode="AI搜法"><svg class="blue"><use href="#search"/></svg>AI搜法</button>
+        <button class="pill" type="button" data-mode="AI类案"><svg class="purple"><use href="#doc"/></svg>AI类案</button>
+        <button class="pill" type="button" data-mode="文书&合同起草"><svg class="green"><use href="#edit"/></svg>文书&amp;合同起草</button>
+        <button class="pill" type="button" data-mode="法律研究"><svg class="cyan"><use href="#scale"/></svg>法律研究</button>
+        <button class="pill" type="button" data-mode="合同审查"><svg class="green"><use href="#shield"/></svg>合同审查</button>
+      </nav>
+      <section class="cards" aria-label="推荐能力">
+        <article class="card research" tabindex="0" role="button" data-prompt="请围绕我提供的案情生成一份法律研究报告，包含问题拆解、法条依据、类案观点和实务建议。"><h2>法律研究</h2><p>多维分析，破解复杂法律难题</p><div class="visual" aria-hidden="true"><span class="doc"><span class="line"></span><span class="line short"></span></span><span class="sheet"></span><span class="badge">支持追问</span></div></article>
+        <article class="card draft" tabindex="0" role="button" data-prompt="请基于事实要点起草文书，并标注每一段的起草依据和可调整点。"><h2>文书起草</h2><p>一键快速成文，支持法规跳转</p><div class="visual" aria-hidden="true"><span class="doc one"><span class="line"></span><span class="line short"></span></span><span class="doc two"><span class="line"></span><span class="line"></span></span><span class="badge">自由对话</span><span class="badge bottom">权威法规引用</span></div></article>
+        <article class="card review" tabindex="0" role="button" data-prompt="请审查合同文本，输出风险等级、问题条款、修改建议和推荐替代表述。"><h2>合同审查</h2><p>智能审查合同，精准识别风险</p><div class="visual" aria-hidden="true"><span class="window"></span><span class="side"></span><span class="text t1"></span><span class="text t2"></span><span class="text t3"></span><span class="text t4"></span><span class="risk"></span></div></article>
+        <article class="card case" tabindex="0" role="button" data-prompt="请检索并分析与本案相似的类案，按裁判观点、事实差异和可引用价值排序。"><h2>AI类案</h2><p>高效检索类案，提炼裁判要旨</p><div class="visual" aria-hidden="true"><span class="window"></span><span class="text t1"></span><span class="text t2"></span><span class="text t3"></span><span class="text t4"></span><span class="badge">裁判观点解析</span><span class="badge bottom">精选案例</span><span class="cube"></span></div></article>
+      </section>
+    </section>
+    <button class="help" type="button" aria-label="联系客服"><svg><use href="#headset"/></svg></button>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <aside class="law-panel" id="lawPanel" aria-hidden="true" aria-label="法规阅读">
+      <button class="law-close" id="lawClose" type="button" aria-label="关闭法规侧栏">&times;</button>
+      <h2>摘要阅读</h2>
+      <div id="lawPanelBody"></div>
+    </aside>
+  </main>
+  <script>
+    (() => {
+      const page = document.querySelector('.page');
+      const form = document.getElementById('composer');
+      const prompt = document.getElementById('prompt');
+      const send = document.getElementById('sendBtn');
+      const dialog = document.getElementById('dialog');
+      const fileBtn = document.getElementById('fileBtn');
+      const fileInput = document.getElementById('fileInput');
+      const filesBox = document.getElementById('files');
+      const skillBtn = document.getElementById('skillBtn');
+      const skillLabel = document.getElementById('skillLabel');
+      const modeChip = document.getElementById('modeChip');
+      const modeLabel = document.getElementById('modeLabel');
+      const skillMenu = document.getElementById('skillMenu');
+      const polishBtn = document.getElementById('polishBtn');
+      const toastBox = document.getElementById('toast');
+      const lawPanel = document.getElementById('lawPanel');
+      const lawPanelBody = document.getElementById('lawPanelBody');
+      const lawClose = document.getElementById('lawClose');
+      const lawPanelTitle = lawPanel.querySelector('h2');
+      let fileNames = [];
+      let skill = '智能规划';
+      let toastTimer = null;
+      let typeToken = 0;
+      const userAvatar = 'https://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaELGMycaxcS4V2dNSJfiaOiaibeAvynhs43gIFaCM9SXaYGT3jZzm1R77SsOUxLL6EwXg1qeDDqh0wDDhx7beEiaqOqbXCBCAYbsqyYqNZicZzmNOicQ/132';
+      const defaultGreeting = '晚上好 满萃金奖深烘冰美式，需要我为你做什么';
+
+      const esc = (value) => String(value).replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[char]));
+      const toast = (text) => {
+        toastBox.textContent = text;
+        toastBox.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastBox.classList.remove('show'), 2200);
+      };
+      const resizePrompt = () => {
+        prompt.style.height = 'auto';
+        prompt.style.height = Math.min(prompt.scrollHeight, 132) + 'px';
+      };
+      const updateSend = () => {
+        const ready = Boolean(prompt.value.trim()) || fileNames.length > 0;
+        send.disabled = !ready;
+        send.classList.toggle('ready', ready);
+      };
+      const renderFiles = () => {
+        filesBox.innerHTML = fileNames.map((name, index) =>
+          `<span class="file-chip"><span>${esc(name)}</span><button type="button" aria-label="移除 ${esc(name)}" data-i="${index}">x</button></span>`
+        ).join('');
+      };
+      const laws = {
+        civil: { label: '法规1', title: '《中华人民共和国民法典》', article: '第一千二百一十三条', date: '2021-01-01施行', body: '机动车发生交通事故造成损害，属于该机动车一方责任的，先由承保机动车强制保险的保险人在强制保险责任限额范围内予以赔偿；不足部分，依照商业保险合同约定赔偿；仍然不足或者没有投保商业保险的，由侵权人赔偿。' },
+        road: { label: '法规2', title: '《中华人民共和国道路交通安全法》', article: '第七十六条', date: '2021-04-29施行', body: '机动车发生交通事故造成人身伤亡、财产损失的，由保险公司在机动车第三者责任强制保险责任限额范围内赔偿；不足部分，按照事故各方过错比例承担赔偿责任。' }
+      };
+      const services = { draft: { label: '文书服务包', title: '文书服务包', price: '￥99起', desc: '授权委托书、起诉状、证据目录等文书，付费后系统自动生成', docs: ['授权委托书','民事起诉状','证据目录','送达地址确认书'], note: '用户付费后，系统将基于案件登记表自动生成以上文书。' }, filing: { label: '线上立案服务', title: '线上立案服务', price: '￥199起', desc: '整理立案材料、上传法院平台，跟进补正、审核与受理进度', docs: ['立案材料清单','网上立案申请','证据材料上传','补正进度跟进'], note: '用户付费后，服务团队将基于案件登记表进入线上立案流程。' }, hearing: { label: '线下律所代理开庭', title: '线下律所代理开庭', price: '预约报价', desc: '匹配律所代理开庭，覆盖庭前准备、举证质证与庭后沟通', docs: ['庭前案情梳理','律所代理开庭','举证质证','庭后沟通记录'], note: '用户付费后，服务团队将基于案件资料安排律所代理开庭。' } };
+
+      function clearModeDisplay() { page.classList.remove('mode-selected'); document.querySelector('.greeting').textContent = defaultGreeting; }
+      function setPrompt(text) { if (page.classList.contains('mode-selected')) resetMode(); prompt.value = text; resizePrompt(); updateSend(); prompt.focus(); toast('已填入场景问题'); }
+      function selectMode(name) { modeLabel.textContent = skill = name; skillLabel.textContent = name; skillMenu.classList.remove('show'); if (page.classList.contains('chatting')) clearModeDisplay(); else { page.classList.add('mode-selected'); document.querySelector('.greeting').innerHTML = `<svg aria-hidden="true"><use href="#edit"/></svg>${esc(name)}`; } prompt.value = ''; resizePrompt(); updateSend(); prompt.focus(); }
+      function resetMode() { clearModeDisplay(); skill = '智能规划'; skillLabel.textContent = skill; }
+      function caseActions() { return `<section class="case-actions pending" id="caseActions"><div class="action-list"><button class="action-btn" type="button" data-panel="case">填写案件登记表</button><button class="action-btn" type="button" data-panel="human">申请一对一服务</button></div></section>`; }
+      function serviceCard() { const entries = Object.entries(services); return `<section class="service-pack pending" id="servicePack"><div class="service-carousel"><div class="service-track" id="serviceTrack">${entries.map(([key, item]) => `<article class="service-card" data-service="${key}"><div class="service-head"><span class="service-icon"><svg aria-hidden="true"><use href="#doc"/></svg></span><div class="service-copy"><h3>${item.title}</h3><p>${item.desc}</p></div></div><div class="price">${item.price}</div><div class="doc-list">${item.docs.map((doc) => `<span>${doc}</span>`).join('')}</div><p>${item.note}</p><button class="service-cta" type="button" aria-label="立即尝试${item.title}">立即尝试</button></article>`).join('')}</div><div class="service-dots">${entries.map(([, item], index) => `<button class="service-dot${index ? '' : ' active'}" type="button" data-slide="${index}" aria-label="查看${item.label}"></button>`).join('')}</div></div></section>`; }
+      function bindServicePack() { const track = document.getElementById('serviceTrack'); if (!track) return; const dots = [...document.querySelectorAll('.service-dot')], sync = () => dots.forEach((dot, i) => dot.classList.toggle('active', i === Math.round(track.scrollLeft / track.clientWidth))); let down = false, x = 0, left = 0; const start = (e) => { if (e.target.closest('.service-cta')) return; e.preventDefault(); down = true; x = e.clientX; left = track.scrollLeft; track.classList.add('dragging'); if (e.pointerId !== undefined) track.setPointerCapture(e.pointerId); }, move = (e) => { if (down) { e.preventDefault(); track.scrollLeft = left - e.clientX + x; } }, end = () => { down = false; track.classList.remove('dragging'); sync(); }; track.addEventListener('scroll', () => requestAnimationFrame(sync)); dots.forEach((dot, i) => dot.addEventListener('click', () => track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' }))); track.addEventListener('pointerdown', start, true); track.addEventListener('pointermove', move); track.addEventListener('mousedown', start, true); document.addEventListener('mousemove', move); ['pointerup','pointercancel','pointerleave','mouseup'].forEach((name) => (name === 'mouseup' ? document : track).addEventListener(name, end)); sync(); }
+
+      function answerBodyHtml() {
+        return `<p>${esc(skill)}已收到你的问题。无接触交通事故中，虽然车辆之间没有发生物理接触，但如果一方行为违法或不当，导致另一方为避险而发生损害，依然可能承担相应法律责任。责任划分通常需要结合具体情形判断：</p><hr><h2>一、责任划分的基本依据</h2><h3><button class="law-ref" type="button" data-law="civil">1. 《中华人民共和国民法典》第一千二百一十三条：</button><span class="law-chip">法规1</span></h3><ul><li>交通事故发生后的赔偿方划分。</li></ul><h3><button class="law-ref" type="button" data-law="road">2. 《中华人民共和国道路交通安全法》第七十六条：</button><span class="law-chip">法规2</span></h3><ul><li>驾驶人违反交通规则的，将依法承担责任。</li></ul><h3>3. 公安机关出具的交通事故认定书：</h3><ul><li>是责任划分的重要依据。</li></ul><hr><h2>二、常见无接触事故责任认定情况举例</h2><table class="answer-table"><thead><tr><th>情况</th><th>是否可能认定有责</th><th>说明</th></tr></thead><tbody><tr><td>A车突然并线，B车为避让撞树</td><td>A车可能承担主要或全部责任</td><td>A车行为导致事故</td></tr><tr><td>A车强行变道，B车为避让发生侧翻</td><td>A车承担主要责任</td><td>B车为避险而损失</td></tr><tr><td>A车正常行驶，B车操作失误自行撞车</td><td>B车自行承担责任</td><td>无证据显示A车有过错</td></tr><tr><td>行人乱穿马路，车辆紧急避让撞他物</td><td>行人可能承担主要责任</td><td>行人行为直接导致事故</td></tr><tr><td>行车记录仪或目击者证明责任方存在</td><td>责任方须依法承担</td><td>证据清晰很关键</td></tr></tbody></table><hr><h2>三、责任认定的关键要素</h2><ol><li><strong>是否有违法或不当驾驶行为</strong>（如强行变道、占道、急刹车等）</li><li><strong>事故发生是否与该行为有因果关系</strong></li><li><strong>受害方是否采取合理避让措施</strong></li><li><strong>现场证据是否完整</strong>：行车记录仪、监控视频、目击证人、事故现场照片等</li></ol>`;
+      }
+
+      function answerHtml(question, names = []) {
+        const title = question || '请处理我上传的文件';
+        const fileHtml = names.length
+          ? `<div class="msg-files">${names.map((name) => `<span>${esc(name)}</span>`).join('')}</div>`
+          : '';
+        return `<section class="chat-turn"><span class="chat-avatar user"><img src="${userAvatar}" alt="用户头像" referrerpolicy="no-referrer"></span><h2 class="user-question">${esc(title)}</h2>${fileHtml}</section><section class="chat-turn"><span class="chat-avatar ai">AI</span><article class="answer-doc typing" id="answerDoc"></article></section><section class="assistant-note pending" id="assistantNote"><span class="chat-avatar ai">AI</span><p>我可以继续通过案件登记表补齐用户信息和案件资料，形成更完整的法律意见；也可以申请付费人工接待。</p></section>${caseActions()}${serviceCard()}`;
+      }
+
+      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms)); function scrollToBottom(smooth = false) { const top = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight); if (smooth) { window.scrollTo({ top, behavior: 'smooth' }); page.scrollTo?.({ top: page.scrollHeight, behavior: 'smooth' }); } else { window.scrollTo(0, top); page.scrollTop = page.scrollHeight; } }
+      async function typeNode(source, target, token) {
+        for (const node of source.childNodes) {
+          if (token !== typeToken) return;
+          if (node.nodeType === Node.TEXT_NODE) for (const char of node.textContent) { if (token !== typeToken) return; target.append(char); scrollToBottom(); await sleep(3); }
+          else { const clone = node.cloneNode(false); target.appendChild(clone); scrollToBottom(); await typeNode(node, clone, token); }
+        }
+      }
+      async function typeAnswer() {
+        const doc = document.getElementById('answerDoc');
+        const note = document.getElementById('assistantNote');
+        const template = document.createElement('template');
+        const token = ++typeToken;
+        template.innerHTML = answerBodyHtml();
+        doc.innerHTML = '';
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) doc.innerHTML = template.innerHTML;
+        else await typeNode(template.content, doc, token);
+        if (token === typeToken) { doc.classList.remove('typing'); note.classList.remove('pending'); document.getElementById('caseActions').classList.remove('pending'); document.getElementById('servicePack').classList.remove('pending'); bindServicePack(); scrollToBottom(true); }
+      }
+
+      function showAnswer(question, names) {
+        clearModeDisplay();
+        page.classList.add('chatting');
+        dialog.innerHTML = answerHtml(question, names);
+        lawPanel.classList.remove('open');
+        lawPanel.setAttribute('aria-hidden', 'true');
+        typeAnswer();
+        scrollToBottom(true);
+      }
+
+      function getInitialQuestion() {
+        return (new URLSearchParams(window.location.search).get('question') || '').trim();
+      }
+
+      function sendMsg() {
+        const text = prompt.value.trim();
+        if (!text && !fileNames.length) {
+          toast('请输入问题或选择文件');
+          prompt.focus();
+          return;
+        }
+        showAnswer(text, [...fileNames]);
+        prompt.value = '';
+        fileNames = [];
+        renderFiles();
+        resizePrompt();
+        updateSend();
+      }
+
+      prompt.addEventListener('input', () => { resizePrompt(); updateSend(); });
+      prompt.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey && !event.ctrlKey) {
+          event.preventDefault();
+          sendMsg();
+        }
+      });
+      form.addEventListener('submit', (event) => { event.preventDefault(); sendMsg(); });
+      fileBtn.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', () => {
+        fileNames = [...fileInput.files].map((file) => file.name);
+        renderFiles();
+        updateSend();
+        toast(fileNames.length ? `已选择 ${fileNames.length} 个文件` : '未选择文件');
+      });
+      filesBox.addEventListener('click', (event) => {
+        const index = event.target.dataset.i;
+        if (index === undefined) return;
+        fileNames.splice(Number(index), 1);
+        renderFiles();
+        updateSend();
+        toast('已移除附件');
+      });
+      skillBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        skillMenu.classList.toggle('show');
+      });
+      skillMenu.addEventListener('click', (event) => {
+        const value = event.target.dataset.mode;
+        if (!value) return;
+        selectMode(value);
+      });
+      function openLawPanel(key) {
+        if (!laws[key]) return;
+        lawPanelTitle.textContent = '摘要阅读';
+        lawPanelBody.innerHTML = Object.values(laws).map((law) => `<h3><mark>${law.label}</mark> ${law.title}</h3><div class="reply-box">法律依据内容<br>${law.title} ${law.article}：${law.label}</div><p class="law-meta"><span></span><span>${law.date}</span><mark>有效</mark></p><p><strong>${law.title} ${law.article}</strong></p><p>${law.body}</p>`).join('<hr>');
+        lawPanel.classList.add('open');
+        lawPanel.setAttribute('aria-hidden', 'false');
+      }
+      function openPanel(title, html) { lawPanel.querySelector('[data-qr-mask]')?.remove(); lawPanelTitle.textContent = title; lawPanelBody.innerHTML = html; lawPanel.classList.add('open'); lawPanel.setAttribute('aria-hidden', 'false'); } function showQr(title, price) { lawPanel.querySelector('[data-qr-mask]')?.remove(); const marks = new Set([0,1,2,6,7,8,9,11,15,17,18,19,20,24,25,26,28,30,32,34,36,40,44,46,48,50,52,54,55,56,58,60,62,64,66,68,70,72,73,74,78,79,80]); lawPanel.insertAdjacentHTML('beforeend', `<div class="qr-mask" data-qr-mask><section class="qr-modal" role="dialog" aria-modal="true" aria-label="支付二维码"><button class="qr-close" type="button" data-close-qr aria-label="关闭支付二维码">&times;</button><h3>${esc(title)}</h3><p>请使用微信或支付宝扫码支付</p><div class="qr-code" aria-hidden="true">${Array.from({length:81},(_,i)=>'<i class="'+(marks.has(i)?'on':'')+'"></i>').join('')}</div><p>${esc(price || '确认金额后支付')}</p><button class="qr-confirm" type="button" data-close-qr>我知道了</button></section></div>`); }
+      function openCasePanel() { openPanel('案件登记表', `<form class="service-form" data-case-form><h3>案件调查表单</h3><p class="intro">按案件登记表模板收集用户信息和案件资料，便于 AI 输出更完整的法律意见。</p><section class="form-card"><h3>1 用户信息</h3><input type="text" placeholder="姓名 / 手机号"><label><input name="role" type="radio" checked> 当事人</label><label><input name="role" type="radio"> 家属或代理人</label></section><section class="form-card"><h3>2 案件资料</h3><textarea placeholder="请填写事故时间、地点、经过、现有证据和对方信息"></textarea></section><section class="form-card"><h3>3 当前诉求</h3><textarea placeholder="例如责任划分、赔偿金额、立案起诉、文书生成或律师代理"></textarea></section><div class="form-actions"><button type="submit">生成法律意见书</button><button type="button" data-close-panel>稍后填写</button></div></form>`); }
+      function openOpinionPanel() { openPanel('AI法律意见书', `<h3>无接触交通事故初步意见</h3><div class="reply-box">已根据案件登记表补充用户信息、案件事实、证据材料和当前诉求，形成初步处理路径。</div><p><strong>建议路径：</strong>先固定行车记录仪、监控、事故认定书等证据，再判断对方是否存在违法或不当驾驶行为。</p><p><strong>下一步：</strong>可继续生成起诉状、证据目录等文书，或申请律师助理/律师一对一复核。</p><div class="form-actions"><button type="button" data-panel="human">申请人工复核</button><button type="button" data-close-panel>稍后处理</button></div>`); }
+      function openHumanPanel() { openPanel('一对一付费服务', `<p class="intro">付款后可申请客服接待，由律师助理或律师在管理后台补充案件登记表；服务完成后可标记结案。</p><section class="pay-card"><strong>律师助理接待</strong><p>适合资料整理、流程说明、基础答疑和登记表补全。</p><div class="price">￥19.9</div><button class="service-cta" type="button" data-pay="assistant" data-pay-title="律师助理接待" data-pay-price="￥19.9">申请律师助理</button></section><section class="pay-card"><strong>律师一对一</strong><p>适合复杂案情、策略判断、证据风险和正式处理建议。</p><div class="price">￥59.9</div><button class="service-cta" type="button" data-pay="lawyer" data-pay-title="律师一对一" data-pay-price="￥59.9">申请律师服务</button></section>`); }
+      function openPaymentPanel(key) { const item = services[key] || services.draft; openPanel(`${item.title}付款方案`, `<section class="pay-card"><strong>${item.title}</strong><p>${item.desc}</p><div class="price">${item.price}</div><div class="doc-list">${item.docs.map((doc) => `<span>${doc}</span>`).join('')}</div><p>${item.note}</p></section><form class="service-form" data-pay-form><section class="form-card"><h3>确认服务信息</h3><input type="text" placeholder="联系人 / 手机号"><textarea placeholder="补充需要优先处理的事项"></textarea></section><div class="form-actions"><button type="button" data-pay="${key}" data-pay-title="${item.title}" data-pay-price="${item.price}">确认付款</button><button type="button" data-close-panel>稍后再说</button></div></form>`); }
+      dialog.addEventListener('click', (event) => {
+        const serviceCta = event.target.closest('.service-cta');
+        if (serviceCta) { const key = serviceCta.closest('.service-card').dataset.service; openPaymentPanel(key); showQr(services[key].title, services[key].price); return; }
+        const panelButton = event.target.closest('[data-panel]');
+        if (panelButton?.dataset.panel === 'case') { openCasePanel(); return; }
+        if (panelButton?.dataset.panel === 'human') { openHumanPanel(); return; }
+        const lawButton = event.target.closest('.law-ref');
+        if (lawButton) openLawPanel(lawButton.dataset.law);
+      });
+      lawPanel.addEventListener('click', (event) => { const panel = event.target.closest('[data-panel]')?.dataset.panel, pay = event.target.closest('[data-pay]'); if (event.target.closest('[data-close-qr]') || event.target.matches('[data-qr-mask]')) { lawPanel.querySelector('[data-qr-mask]')?.remove(); return; } if (panel === 'human') { openHumanPanel(); return; } if (pay) { showQr(pay.dataset.payTitle || lawPanelTitle.textContent, pay.dataset.payPrice || lawPanel.querySelector('.price')?.textContent.trim()); return; } if (event.target.closest('[data-close-panel]')) lawClose.click(); }); lawPanel.addEventListener('submit', (event) => { event.preventDefault(); if (event.target.matches('[data-case-form]')) { openOpinionPanel(); toast('已生成法律意见书'); return; } if (event.target.matches('[data-pay-form]')) { showQr(lawPanelTitle.textContent, lawPanel.querySelector('.price')?.textContent.trim()); return; } toast('已提交服务需求'); lawClose.click(); });
+      lawClose.addEventListener('click', () => {
+        lawPanel.classList.remove('open');
+        lawPanel.setAttribute('aria-hidden', 'true');
+      });
+      document.addEventListener('click', (event) => {
+        if (!skillMenu.contains(event.target) && !skillBtn.contains(event.target)) {
+          skillMenu.classList.remove('show');
+        }
+      });
+      polishBtn.addEventListener('click', () => {
+        const text = prompt.value.trim();
+        if (!text) {
+          toast('先输入问题，再帮你润色');
+          prompt.focus();
+          return;
+        }
+        prompt.value = `请将以下问题整理为清晰、专业、可执行的法律提问：\n${text}`;
+        resizePrompt();
+        updateSend();
+        toast('已润色为结构化提问');
+      });
+      document.querySelectorAll('.quick [data-mode],.cards [data-prompt]').forEach((element) => {
+        const activate = () => element.dataset.mode ? selectMode(element.dataset.mode) : setPrompt(element.dataset.prompt);
+        element.addEventListener('click', activate);
+        element.addEventListener('keydown', (event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          event.preventDefault();
+          activate();
+        });
+      });
+      modeChip.addEventListener('click', resetMode);
+      document.querySelector('.side-back').addEventListener('click', () => {
+        if (page.classList.contains('chatting')) {
+          page.classList.remove('chatting');
+          dialog.innerHTML = '';
+          toast('已回到首页');
+          return;
+        }
+        toast('当前已在首页');
+      });
+      document.querySelector('.help').addEventListener('click', () => {
+        openHumanPanel();
+      });
+      const initialQuestion = getInitialQuestion();
+      if (initialQuestion) {
+        showAnswer(initialQuestion, []);
+      }
+      updateSend();
+    })();
+  </script>
+</body>
+</html>

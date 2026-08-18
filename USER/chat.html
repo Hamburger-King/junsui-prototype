@@ -54,29 +54,11 @@
         <div class="composer-foot">
           <button class="pill" id="fileBtn" type="button"><svg><use href="#paperclip"/></svg>选择文件</button>
           <input id="fileInput" type="file" multiple hidden />
-          <button class="pill mode-chip" id="modeChip" type="button" aria-label="取消当前能力"><svg><use href="#edit"/></svg><span id="modeLabel">文书&amp;合同起草</span><span class="close" aria-hidden="true">×</span></button>
-          <button class="pill" id="skillBtn" type="button"><svg><use href="#spark"/></svg>技能：<span id="skillLabel">智能规划</span></button>
           <span class="spacer"></span><button class="assist" id="polishBtn" type="button"><svg width="15" height="15"><use href="#spark"/></svg>问题润色</button><span class="divider" aria-hidden="true"></span>
           <button class="send" id="sendBtn" type="submit" aria-label="发送" disabled><svg><use href="#up"/></svg></button>
         </div>
-        <div class="skill-menu" id="skillMenu" role="menu">
-          <button type="button" data-mode="AI搜法">AI搜法</button><button type="button" data-mode="AI类案">AI类案</button><button type="button" data-mode="文书&合同起草">文书&amp;合同起草</button><button type="button" data-mode="法律研究">法律研究</button><button type="button" data-mode="合同审查">合同审查</button>
-        </div>
       </form>
       <p class="chat-footnote">内容由智能法律助手生成，仅供参考，请结合具体证据与专业意见判断</p>
-      <nav class="quick" aria-label="快捷功能">
-        <button class="pill" type="button" data-mode="AI搜法"><svg class="blue"><use href="#search"/></svg>AI搜法</button>
-        <button class="pill" type="button" data-mode="AI类案"><svg class="purple"><use href="#doc"/></svg>AI类案</button>
-        <button class="pill" type="button" data-mode="文书&合同起草"><svg class="green"><use href="#edit"/></svg>文书&amp;合同起草</button>
-        <button class="pill" type="button" data-mode="法律研究"><svg class="cyan"><use href="#scale"/></svg>法律研究</button>
-        <button class="pill" type="button" data-mode="合同审查"><svg class="green"><use href="#shield"/></svg>合同审查</button>
-      </nav>
-      <section class="cards" aria-label="推荐能力">
-        <article class="card research" tabindex="0" role="button" data-prompt="请围绕我提供的案情生成一份法律研究报告，包含问题拆解、法条依据、类案观点和实务建议。"><h2>法律研究</h2><p>多维分析，破解复杂法律难题</p><div class="visual" aria-hidden="true"><span class="doc"><span class="line"></span><span class="line short"></span></span><span class="sheet"></span><span class="badge">支持追问</span></div></article>
-        <article class="card draft" tabindex="0" role="button" data-prompt="请基于事实要点起草文书，并标注每一段的起草依据和可调整点。"><h2>文书起草</h2><p>一键快速成文，支持法规跳转</p><div class="visual" aria-hidden="true"><span class="doc one"><span class="line"></span><span class="line short"></span></span><span class="doc two"><span class="line"></span><span class="line"></span></span><span class="badge">自由对话</span><span class="badge bottom">权威法规引用</span></div></article>
-        <article class="card review" tabindex="0" role="button" data-prompt="请审查合同文本，输出风险等级、问题条款、修改建议和推荐替代表述。"><h2>合同审查</h2><p>智能审查合同，精准识别风险</p><div class="visual" aria-hidden="true"><span class="window"></span><span class="side"></span><span class="text t1"></span><span class="text t2"></span><span class="text t3"></span><span class="text t4"></span><span class="risk"></span></div></article>
-        <article class="card case" tabindex="0" role="button" data-prompt="请检索并分析与本案相似的类案，按裁判观点、事实差异和可引用价值排序。"><h2>AI类案</h2><p>高效检索类案，提炼裁判要旨</p><div class="visual" aria-hidden="true"><span class="window"></span><span class="text t1"></span><span class="text t2"></span><span class="text t3"></span><span class="text t4"></span><span class="badge">裁判观点解析</span><span class="badge bottom">精选案例</span><span class="cube"></span></div></article>
-      </section>
     </section>
     <button class="help" type="button" aria-label="联系客服"><svg><use href="#headset"/></svg></button>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -96,11 +78,6 @@
       const fileBtn = document.getElementById('fileBtn');
       const fileInput = document.getElementById('fileInput');
       const filesBox = document.getElementById('files');
-      const skillBtn = document.getElementById('skillBtn');
-      const skillLabel = document.getElementById('skillLabel');
-      const modeChip = document.getElementById('modeChip');
-      const modeLabel = document.getElementById('modeLabel');
-      const skillMenu = document.getElementById('skillMenu');
       const polishBtn = document.getElementById('polishBtn');
       const toastBox = document.getElementById('toast');
       const lawPanel = document.getElementById('lawPanel');
@@ -143,10 +120,6 @@
       };
       const services = { draft: { label: '文书服务包', title: '文书服务包', price: '￥99起', desc: '授权委托书、起诉状、证据目录等文书，付费后系统自动生成', docs: ['授权委托书','民事起诉状','证据目录','送达地址确认书'], note: '用户付费后，系统将基于案件登记表自动生成以上文书。' }, filing: { label: '线上立案服务', title: '线上立案服务', price: '￥199起', desc: '整理立案材料、上传法院平台，跟进补正、审核与受理进度', docs: ['立案材料清单','网上立案申请','证据材料上传','补正进度跟进'], note: '用户付费后，服务团队将基于案件登记表进入线上立案流程。' }, hearing: { label: '线下律所代理开庭', title: '线下律所代理开庭', price: '预约报价', desc: '匹配律所代理开庭，覆盖庭前准备、举证质证与庭后沟通', docs: ['庭前案情梳理','律所代理开庭','举证质证','庭后沟通记录'], note: '用户付费后，服务团队将基于案件资料安排律所代理开庭。' } };
 
-      function clearModeDisplay() { page.classList.remove('mode-selected'); document.querySelector('.greeting').textContent = defaultGreeting; }
-      function setPrompt(text) { if (page.classList.contains('mode-selected')) resetMode(); prompt.value = text; resizePrompt(); updateSend(); prompt.focus(); toast('已填入场景问题'); }
-      function selectMode(name) { modeLabel.textContent = skill = name; skillLabel.textContent = name; skillMenu.classList.remove('show'); if (page.classList.contains('chatting')) clearModeDisplay(); else { page.classList.add('mode-selected'); document.querySelector('.greeting').innerHTML = `<svg aria-hidden="true"><use href="#edit"/></svg>${esc(name)}`; } prompt.value = ''; resizePrompt(); updateSend(); prompt.focus(); }
-      function resetMode() { clearModeDisplay(); skill = '智能规划'; skillLabel.textContent = skill; }
       function caseActions() { return `<section class="case-actions pending" id="caseActions"><div class="action-list"><button class="action-btn" type="button" data-panel="case">填写案件登记表</button><button class="action-btn" type="button" data-panel="human">申请一对一服务</button></div></section>`; }
       function serviceCard() { const entries = Object.entries(services); return `<section class="service-pack pending" id="servicePack"><div class="service-carousel"><div class="service-track" id="serviceTrack">${entries.map(([key, item]) => `<article class="service-card" data-service="${key}"><div class="service-head"><span class="service-icon"><svg aria-hidden="true"><use href="#doc"/></svg></span><div class="service-copy"><h3>${item.title}</h3><p>${item.desc}</p></div></div><div class="price">${item.price}</div><div class="doc-list">${item.docs.map((doc) => `<span>${doc}</span>`).join('')}</div><p>${item.note}</p><button class="service-cta" type="button" aria-label="立即尝试${item.title}">立即尝试</button></article>`).join('')}</div><div class="service-dots">${entries.map(([, item], index) => `<button class="service-dot${index ? '' : ' active'}" type="button" data-slide="${index}" aria-label="查看${item.label}"></button>`).join('')}</div></div></section>`; }
       function bindServicePack() { const track = document.getElementById('serviceTrack'); if (!track) return; const dots = [...document.querySelectorAll('.service-dot')], sync = () => dots.forEach((dot, i) => dot.classList.toggle('active', i === Math.round(track.scrollLeft / track.clientWidth))); let down = false, x = 0, left = 0; const start = (e) => { if (e.target.closest('.service-cta')) return; e.preventDefault(); down = true; x = e.clientX; left = track.scrollLeft; track.classList.add('dragging'); if (e.pointerId !== undefined) track.setPointerCapture(e.pointerId); }, move = (e) => { if (down) { e.preventDefault(); track.scrollLeft = left - e.clientX + x; } }, end = () => { down = false; track.classList.remove('dragging'); sync(); }; track.addEventListener('scroll', () => requestAnimationFrame(sync)); dots.forEach((dot, i) => dot.addEventListener('click', () => track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' }))); track.addEventListener('pointerdown', start, true); track.addEventListener('pointermove', move); track.addEventListener('mousedown', start, true); document.addEventListener('mousemove', move); ['pointerup','pointercancel','pointerleave','mouseup'].forEach((name) => (name === 'mouseup' ? document : track).addEventListener(name, end)); sync(); }
@@ -235,15 +208,6 @@
         updateSend();
         toast('已移除附件');
       });
-      skillBtn.addEventListener('click', (event) => {
-        event.stopPropagation();
-        skillMenu.classList.toggle('show');
-      });
-      skillMenu.addEventListener('click', (event) => {
-        const value = event.target.dataset.mode;
-        if (!value) return;
-        selectMode(value);
-      });
       function openLawPanel(key) {
         if (!laws[key]) return;
         lawPanelTitle.textContent = '摘要阅读';
@@ -270,11 +234,6 @@
         lawPanel.classList.remove('open');
         lawPanel.setAttribute('aria-hidden', 'true');
       });
-      document.addEventListener('click', (event) => {
-        if (!skillMenu.contains(event.target) && !skillBtn.contains(event.target)) {
-          skillMenu.classList.remove('show');
-        }
-      });
       polishBtn.addEventListener('click', () => {
         const text = prompt.value.trim();
         if (!text) {
@@ -287,16 +246,6 @@
         updateSend();
         toast('已润色为结构化提问');
       });
-      document.querySelectorAll('.quick [data-mode],.cards [data-prompt]').forEach((element) => {
-        const activate = () => element.dataset.mode ? selectMode(element.dataset.mode) : setPrompt(element.dataset.prompt);
-        element.addEventListener('click', activate);
-        element.addEventListener('keydown', (event) => {
-          if (event.key !== 'Enter' && event.key !== ' ') return;
-          event.preventDefault();
-          activate();
-        });
-      });
-      modeChip.addEventListener('click', resetMode);
       document.querySelector('.side-back').addEventListener('click', () => {
         if (page.classList.contains('chatting')) {
           page.classList.remove('chatting');
@@ -318,3 +267,4 @@
   </script>
 </body>
 </html>
+
